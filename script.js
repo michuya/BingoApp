@@ -34,9 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 選択肢リストを保存
     saveButton.addEventListener('click', () => {
+        if (drawnItems.length > 0 && !confirm('選択肢リストを更新しますか？<br>抽選結果はクリアされます。')) {
+            return;
+        }
         options = optionsInput.value.split('\n').map(item => item.trim()).filter(item => item);
         localStorage.setItem('bingoOptions', JSON.stringify(options));
         alert('選択肢リストを保存しました！');
+        clearHistory();
     });
 
     // 抽選処理
@@ -87,7 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 履歴削除
     const clearHistory = () => {
-        
+        localStorage.removeItem('bingoDrawn');
+        drawnItems = [];
+        updateHistory();
     }
 
     const closeConfig = () => {
@@ -117,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 設定画面開く
     configureButton.addEventListener('click', () => {
+        optionsInput.value = options.join('\n');
         modalConfig.style.display = 'flex';
     });
     modalConfig.addEventListener('click', (event) => {
@@ -134,6 +141,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     confCancelButton.addEventListener('click', () => {
         closeConfig();
+    });
+
+    confHistoryClearButton.addEventListener('click', () => {
+        clearHistory();
+    });
+
+    // 選択肢リスト削除ボタンの追加とロジック
+    const clearOptionsButton = document.createElement('button');
+    clearOptionsButton.id = 'clearOptions';
+    clearOptionsButton.textContent = 'リスト削除';
+    const optionsSection = document.querySelector('.options-section');
+    optionsSection.appendChild(clearOptionsButton);
+
+    clearOptionsButton.addEventListener('click', () => {
+        if (confirm('選択肢リストを削除しますか？')) {
+            optionsInput.value = '';
+            options = [];
+            localStorage.removeItem('bingoOptions');
+            alert('選択肢リストを削除しました。');
+            clearHistory();
+        }
     });
 
     // 初期化
