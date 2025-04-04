@@ -144,7 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     confHistoryClearButton.addEventListener('click', () => {
-        clearHistory();
+        if (confirm('ビンゴの結果リストを削除しますか？')) {
+            clearHistory();
+        }
     });
 
     // 選択肢リスト削除ボタンの追加とロジック
