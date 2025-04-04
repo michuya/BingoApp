@@ -101,14 +101,26 @@ button:hover {
     background-color: rgba(0,0,0,0.8);
     justify-content: center;
     align-items: center;
+    z-index: inherit;
 }
 
 .modal-content {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
+    max-width: 90%;
+    width: fit-content;
     text-align: center;
     position: relative;
+    overflow-y: auth;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#modalConf .modal-content textarea {
+    width: 100%;
+    box-sizing: border-box;;
 }
 
 #modal-result {
