@@ -71,6 +71,34 @@ button:hover {
     justify-content: center;
 }
 
+/* 全画面表示用履歴 */
+#fullscreen-history {
+    display: grid;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    z-index: 101;
+    opacity: 0;
+    pointer-events: none;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 可変の列 */
+    grid-gap: 20px; /* 要素間の隙間 */
+    transition: opacity 0.2s ease-in-out;
+    justify-content: center;
+    align-items: center;
+}
+
+#fullscreen-history.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#fullscreen-history .history-item{
+    font-size: 24px;
+}
+
 .history-section {
     text-align: left;
     max-height: 200px;

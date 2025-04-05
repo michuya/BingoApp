@@ -6,9 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const configureButton = document.getElementById('configure');
     const resultDisplay = document.getElementById('result');
     const historyList = document.getElementById('history');
+    const historyContainer = document.getElementsByClassName('history-section')[0];
+
     const modal = document.getElementById('modal');
     const modalResult = document.getElementById('modal-result');
     const modalClose = document.getElementById('modal-close');
+    const fullscreenHistory = document.getElementById('fullscreen-history');
 
     const modalConfig = document.getElementById('modalConf');
     const confUpdateButton = document.getElementById('confUpdate');
@@ -34,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 選択肢リストを保存
     saveButton.addEventListener('click', () => {
-        if (drawnItems.length > 0 && !confirm('選択肢リストを更新しますか？<br>抽選結果はクリアされます。')) {
+        if (drawnItems.length > 0 && !confirm('選択肢リストを更新しますか？\n抽選結果はクリアされます。')) {
             return;
         }
         options = optionsInput.value.split('\n').map(item => item.trim()).filter(item => item);
@@ -82,11 +85,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // 履歴更新
     const updateHistory = () => {
         historyList.innerHTML = '';
+        fullscreenHistory.innerHTML = '';
         drawnItems.forEach(item => {
             const li = document.createElement('li');
             li.textContent = item;
+            li.classList.add('history-item');
             historyList.appendChild(li);
+
+            // 全画面表示用の要素も作成
+            const fullscreenLi = document.createElement('li');
+            fullscreenLi.textContent = item;
+            fullscreenLi.classList.add('history-item');
+            fullscreenHistory.appendChild(fullscreenLi);
         });
+    };
+
+    // 全画面表示の履歴を表示する処理
+    const showFullscreenHistory = () => {
+        fullscreenHistory.classList.add('show');
+        historyContainer.classList.add('fullscreen');
+        // 全画面表示用の閉じるボタンを追加
+        addFullscreenCloseButton();
+    };
+
+    // 全画面表示の履歴をクリアする処理
+    const clearFullscreenHistory = () => {
+        fullscreenHistory.classList.remove('show');
+        historyContainer.classList.remove('fullscreen');
+        // 全画面表示用の閉じるボタンを削除
+        removeFullscreenCloseButton();
     };
 
     // 履歴削除
@@ -103,8 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 全画面表示
     fullscreenButton.addEventListener('click', () => {
         if (drawnItems.length > 0) {
+            if (historyContainer.classList.contains('fullscreen')) {
+                clearFullscreenHistory();
+            } else {
+                showFullscreenHistory();
+            }
             modalResult.textContent = drawnItems[drawnItems.length - 1];
-            modal.style.display = 'flex';
         }
     });
 
@@ -127,10 +158,10 @@ document.addEventListener('DOMContentLoaded', () => {
         modalConfig.style.display = 'flex';
     });
     modalConfig.addEventListener('click', (event) => {
-        const modalContent = event.target.getElementsByClassName('modal-content')[0];
+        const modalContent = modalConfig.querySelector('.modal-content');
 
         // クリックされた要素がモーダルコンテンツの外側かどうかを判定
-        if (!modalContent.contains(event.target)) {
+        if (!modalContent?.contains(event.target)) {
             closeConfig();
         }
     });
@@ -166,6 +197,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 全画面表示用の閉じるボタンを追加する関数
+    const addFullscreenCloseButton = () => {
+        const closeButton = document.createElement('button');
+        closeButton.id = 'fullscreen-close';
+        closeButton.textContent = '閉じる';
+        closeButton.style.position = 'absolute';
+        closeButton.style.top = '10px';
+        closeButton.style.right = '10px';
+        closeButton.style.zIndex = '102'; // 他の要素よりも前面に表示
+        closeButton.addEventListener('click', clearFullscreenHistory);
+        fullscreenHistory.appendChild(closeButton);
+    };
+
+    // 全画面表示用の閉じるボタンを削除する関数
+    const removeFullscreenCloseButton = () => {
+        const closeButton = document.getElementById('fullscreen-close');
+        if (closeButton) {
+            closeButton.remove();
+        }
+    };
+
+    // ESCキーで全画面表示を閉じる処理
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (historyContainer.classList.contains('fullscreen')) {
+                clearFullscreenHistory();
+            }
+        }
+    });
+    
     // 初期化
     loadData();
 });
