@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const modalContent = modalConfig.querySelector('.modal-content');
 
         // クリックされた要素がモーダルコンテンツの外側かどうかを判定
-        if (!modalContent?.contains(event.target)) {
+        if (modalContent && !modalContent.contains(event.target)) {
             closeConfig();
         }
     });
