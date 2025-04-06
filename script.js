@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const randomItem = remainingOptions[Math.floor(Math.random() * remainingOptions.length)];
             resultDisplay.textContent = randomItem;
             spinCount++;
-            if (spinCount > 10) {
+            if (spinCount > 31) {
                 clearInterval(spinInterval);
                 finishDraw(randomItem);
             }
@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateHistory = () => {
         historyList.innerHTML = '';
         fullscreenHistory.innerHTML = '';
+
         drawnItems.forEach(item => {
             const li = document.createElement('li');
             li.textContent = item;
@@ -98,6 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
             fullscreenLi.classList.add('history-item');
             fullscreenHistory.appendChild(fullscreenLi);
         });
+        
+        // 残り個数の表示
+        const remainingCount = options.length - drawnItems.length;
+        document.getElementById('remainingCount').textContent = `残り ${remainingCount}/${options.length}`;
     };
 
     // 全画面表示の履歴を表示する処理
